@@ -107,7 +107,15 @@ app.get("/employees", (req, res) => {
           });
       }
     } else {
-      res.status(404).send("Page Not Found");
+      dataService
+        .getAllEmployees()
+        .then(function(emp) {
+          res.json(emp);
+        })
+        .catch(function(reason) {
+          console.log(reason);
+          res.send(reason);
+        });
     }
   } else {
     dataService
