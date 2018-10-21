@@ -84,8 +84,93 @@ function getDepartments() {
   });
 }
 
+function addEmployee(employeeData) {
+  return new Promise(function(resolve, reject) {
+    if (employeeData) {
+      if (employeeData.isManager) {
+        employeeData.isManager = true;
+      } else {
+        employeeData.isManager = false;
+      }
+      employeeData.employeeNum = employees.length + 1;
+      resolve(employees.push(employeeData));
+    } else {
+      reject("Empty data");
+    }
+  });
+}
+
+function getEmployeesByStatus(status) {
+  return new Promise(function(resolve, reject) {
+    var returnEmployees = [];
+    for (var i = 0; i < employees.length; i++) {
+      if (employees[i].status.toLowerCase() == status.toLowerCase()) {
+        returnEmployees.push(employees[i]);
+      }
+    }
+    if (returnEmployees.length != 0) {
+      resolve(returnEmployees);
+    } else {
+      reject("Employee not find");
+    }
+  });
+}
+
+function getEmployeesByDepartment(department) {
+  return new Promise(function(resolve, reject) {
+    var returnDepartment = [];
+    for (var i = 0; i < employees.length; i++) {
+      if (employees[i].department == department) {
+        returnDepartment.push(employees[i]);
+      }
+    }
+    if (returnDepartment.length != 0) {
+      resolve(returnDepartment);
+    } else {
+      reject("No departments to show. ");
+    }
+  });
+}
+
+function getEmployeesByManager(manager) {
+  return new Promise(function(resolve, reject) {
+    var returnEmployeesByManager = [];
+    for (var i = 0; i < employees.length; i++) {
+      if (employees[i].employeeManagerNum == manager) {
+        returnEmployeesByManager.push(employees[i]);
+      }
+    }
+    if (returnEmployeesByManager.length != 0) {
+      resolve(returnEmployeesByManager);
+    } else {
+      reject("No employee under this manager. ");
+    }
+  });
+}
+
+function getEmployeeByNum(num) {
+  return new Promise(function(resolve, reject) {
+    var returnEmployeeByNum = [];
+    for (var i = 0; i < employees.length; i++) {
+      if (employees[i].employeeNum == num) {
+        returnEmployeeByNum.push(employees[i]);
+      }
+    }
+    if (returnEmployeeByNum.length != 0) {
+      resolve(returnEmployeeByNum);
+    } else {
+      reject("No departments to show. ");
+    }
+  });
+}
+
 //module.exports.initialize = initialize;
 module.exports.getAllEmployees = getAllEmployees;
 module.exports.getManagers = getManagers;
 module.exports.getDepartments = getDepartments;
 module.exports.initialize = initialize;
+module.exports.addEmployee = addEmployee;
+module.exports.getEmployeesByStatus = getEmployeesByStatus;
+module.exports.getEmployeesByDepartment = getEmployeesByDepartment;
+module.exports.getEmployeesByManager = getEmployeesByManager;
+module.exports.getEmployeeByNum = getEmployeeByNum;
