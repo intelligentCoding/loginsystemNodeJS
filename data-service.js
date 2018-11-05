@@ -164,6 +164,29 @@ function getEmployeeByNum(num) {
   });
 }
 
+function updateEmployee(employeeData) {
+  return new Promise(function(resolve, reject) {
+    //We don't want our loop to keep going even after finding our employee we need to update.
+    var forLoopNum = employees.length;
+    for (var i = 0; i < forLoopNum; i++) {
+      if (employees[i].employeeNum == employeeData.employeeNum) {
+        forLoopNum = i;
+
+        employees[i].firstName = employeeData.firstName;
+        employees[i].lastName = employeeData.lastName;
+        employees[i].email = employeeData.email;
+        employees[i].addressStreet = employeeData.addressStreet;
+        employees[i].addressCity = employeeData.addressCity;
+        employees[i].addressState = employeeData.addressState;
+        employees[i].addressPostal = employeeData.addressPostal;
+        employees[i].employeeManagerNum = employeeData.employeeManagerNum;
+        employees[i].status = employeeData.status;
+      }
+    }
+    resolve("It is done");
+  });
+}
+
 //module.exports.initialize = initialize;
 module.exports.getAllEmployees = getAllEmployees;
 module.exports.getManagers = getManagers;
@@ -174,3 +197,5 @@ module.exports.getEmployeesByStatus = getEmployeesByStatus;
 module.exports.getEmployeesByDepartment = getEmployeesByDepartment;
 module.exports.getEmployeesByManager = getEmployeesByManager;
 module.exports.getEmployeeByNum = getEmployeeByNum;
+
+module.exports.updateEmployee = updateEmployee;

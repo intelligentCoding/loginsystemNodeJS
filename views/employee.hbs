@@ -1,0 +1,186 @@
+<div class="row">
+  <div class="col-md-12">
+
+    {{#each data}}
+    <h2>{{this.firstName}} {{ this.lastName}} - Employee: {{ this.employeeNum}}</h2>
+    <hr />
+    <form method="post" action="/employee/update">
+      <fieldset>
+        <legend>Personal Information</legend>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="firstName">First Name:</label>
+              <input class="form-control" id="firstName" name="firstName" type="text" value="{{ this.firstName}}" />
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="lastName">Last Name:</label>
+              <input class="form-control" id="lastName" name="lastName" type="text" value="{{ this.lastName}}" />
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+
+              <input class="form-control" id="employeeNum" name="employeeNum" type="hidden" value="{{ this.employeeNum}}" />
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="email">Email:</label>
+              <input class="form-control" id="email" name="email" type="email" value="{{ this.email}}" />
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="SSN">Social Security Number:</label>
+              <input class="form-control" id="SSN" name="SSN" type="text" value="{{ this.SSN}} " readonly " " />
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="addressStreet">Address (Street):</label>
+              <input class="form-control" id="addressStreet" name="addressStreet" type="text" value="{{ this.addressStreet}} " />
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="addressCity">Address (City):</label>
+              <input class="form-control" id="addressCity" name="addressCity" type="text" value="{{ this.addressCity}} " />
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="addressState">Address (state):</label>
+              <input class="form-control" id="addressState" name="addressState" type="text" value="{{ this.addressState}} " />
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="addressPostal">Address (Zip Code):</label>
+              <input class="form-control" id="addressPostal" name="addressPostal" type="text" value="{{ this.addressPostal}} " />
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="isManager">Manager:</label>
+              <input class="form-control" id="isManager" name="isManager" type="checkbox" value="Manager" {{#if this.isManager}} checked="checked"
+                {{/if}} />
+              <br/>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="employeeManagerNum">Employee's Manager Number: </label>
+              <input class="form-control" id="employeeManagerNum" name="employeeManagerNum" type="text" value="{{ this.employeeManagerNum}} "
+              />
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="status">Status: </label>
+              <input class="form-control" id="status" name="status" type="radio" value="Part Time" {{#equal this.status "Part Time" }}
+                checked="checked" {{/equal}} /> Part Time
+
+              <input class="form-control" id="status" name="status" type="radio" value="Full Time" {{#equal this.status "Full Time" }}
+                checked="checked" {{/equal}} /> Full Time
+
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="department">Employee's Department: </label>
+              <select>
+                <p>Hello</p>
+                <p>{{this.department}}</p>
+                <option value="1" {{#equal this.department "1" }} selected {{/equal}}>1</option>
+                <option value="2" {{#equal this.department "2" }} selected {{/equal}}>2</option>
+                <option value="3" {{#equal this.department "3" }} selected {{/equal}}>3</option>
+                <option value="4" {{#equal this.department "4" }} selected {{/equal}}>4</option>
+                <option value="5" {{#equal this.department "5" }} selected {{/equal}}>5</option>
+                <option value="6" {{#equal this.department "6" }} selected {{/equal}}>6</option>
+                <option value="7" {{#equal this.department "7" }} selected {{/equal}}>7</option>
+              </select>
+
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="hireDate">Hire Date : </label>
+              <input class="form-control" id="hireDate" name="hireDate" type="text" value="{{ this.hireDate}}" readonly/>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+      </fieldset>
+      <hr />
+      <input type="submit" class="btn btn-primary pull-right" value="Update Employee" />
+      <br />
+      <br />
+      <br />
+    </form>
+    {{/each}}
+  </div>
+</div>

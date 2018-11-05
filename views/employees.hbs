@@ -1,0 +1,70 @@
+<div class="row">
+  <div class="col-md-12">
+    <h2>Employees</h2>
+    <hr />
+
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th> Employee Num</th>
+            <th> Full Name</th>
+            <th> Email</th>
+            <th> Address</th>
+            <th> Manager ID</th>
+            <th> Status</th>
+            <th> Department</th>
+            <th> Hire On</th>
+          </tr>
+        </thead>
+        {{#each data}}
+        <tbody>
+
+          <tr>
+            <td>
+              {{this.employeeNum}}
+            </td>
+            <td>
+              <a href="/employees/{{this.employeeNum}}">{{this.firstName}} {{this.lastName}}</a>
+            </td>
+            <td>
+              <a href="mailto:{{this.email}}" target="_top">{{this.email}}</a>
+
+            </td>
+            <td>
+              {{this.addressStreet}}, {{addressStreet}}, {{addressPostal}}
+            </td>
+            <td>
+              <a href="/employees?manager={{this.employeeManagerNum}}">{{this.employeeManagerNum}}</a>
+
+            </td>
+            <td>
+              <a href="/employees?status={{this.status}}">{{this.status}}</a>
+
+            </td>
+            <td>
+              <a href="/employees?department={{this.department}}">{{this.department}}</a>
+
+            </td>
+            <td>
+              {{this.hireDate}}
+            </td>
+
+          </tr>
+
+        </tbody>
+        {{/each}}
+
+
+
+      </table>
+    </div>
+
+  </div>
+
+
+  <div class="col-md-12 text-center">
+    <strong>{{message}}</strong>
+  </div>
+
+</div>

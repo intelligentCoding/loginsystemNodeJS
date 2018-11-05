@@ -1,24 +1,66 @@
 /*********************************************************************************
- *  BTI325 – Assignment 02
- *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part *  of this assignment has been copied manually or electronically from any other source
- *  (including 3rd party web sites) or distributed to other students.
- *
- *  Name: Kashif mahmood Student ID: 041-567-132 Date: Oct 6th 2018
- *
- *  Online (Heroku) Link: https://fierce-plains-52224.herokuapp.com/
- *
- ********************************************************************************/
+*  BTI325 – Assignment 4
+*  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part 
+*  of this assignment has been copied manually or electronically from any other source 
+*  (including 3rd party web sites) or distributed to other students.
+* 
+*  Name: Kashif Mahmood Student ID: 041-567-132 Date: 2018-11-04
+*  Online (Heroku) Link: ________________________________________________________
+*
+********************************************************************************/ 
+
+
+
+
 
 const express = require("express");
 const multer = require("multer");
+const exphbs = require("express-handlebars");
+const path = require("path");
 const app = express();
+
+/* 
+Our server needs to know how to handle HTML files that are formatted using handlebars.
+This will tell our server that any file with the “.hbs” extension (instead of “.html”) will use the handlebars “engine” (template engine).
+*/
+app.engine(
+  ".hbs",
+  exphbs({
+    defaultLayout: "main",
+    extname: ".hbs",
+    layoutsDir: path.join(__dirname, "views/layouts"),
+    helpers: {
+      navLink: function(url, options) {
+        return (
+          "<li" +
+          (url == app.locals.activeRoute ? ' class="active" ' : "") +
+          '><a href="' +
+          url +
+          '">' +
+          options.fn(this) +
+          "</a></li>"
+        );
+      },
+
+      equal: function(lvalue, rvalue, options) {
+        if (arguments.length < 3)
+          throw new Error("Handlebars Helper equal needs 2 parameters");
+        if (lvalue != rvalue) {
+          return options.inverse(this);
+        } else {
+          return options.fn(this);
+        }
+      }
+    }
+  })
+);
+app.set("view engine", ".hbs");
+
 var fs = require("fs");
 const bodyParser = require("body-parser");
 var dataService = require("./data-service");
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: true }));
-
-var path = require("path");
 
 var dataService = require("./data-service");
 const HTTP_PORT = process.env.PORT || 8080;
@@ -28,24 +70,30 @@ function onHttpStart() {
   console.log("Express http server listening on: " + HTTP_PORT);
 }
 
+app.use(function(req, res, next) {
+  let route = req.baseUrl + req.path;
+  app.locals.activeRoute = route == "/" ? "/" : route.replace(/\/$/, "");
+  next();
+});
+
 // setup a route on the 'root' of the url
 // IE: http://localhost:8080/
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname + "/views/home.html"));
+  res.render("home");
 });
 
 // now add a route for the /headers page
 // IE: http://localhost:8080/headers
 app.get("/about", (req, res) => {
-  res.sendFile(path.join(__dirname + "/views/about.html"));
+  res.render("about");
 });
 
 app.get("/employees/add", (req, res) => {
-  res.sendFile(path.join(__dirname + "/views/addEmployee.html"));
+  res.render("addEmployee");
 });
 
 app.get("/images/add", (req, res) => {
-  res.sendFile(path.join(__dirname + "/views/addImage.html"));
+  res.render("addImage");
 });
 
 app.get("/departments", (req, res) => {
@@ -72,10 +120,12 @@ app.get("/employees", (req, res) => {
         dataService
           .getEmployeesByStatus(statusValue)
           .then(function(emp) {
-            res.json(emp);
+            res.render("employees", { data: emp });
+            // res.json(emp);
           })
           .catch(function(reason) {
-            res.send(reason);
+            res.render({message: "no results"});
+            // res.send(reason);
           });
       }
 
@@ -86,7 +136,8 @@ app.get("/employees", (req, res) => {
         dataService
           .getEmployeesByDepartment(departmentValue)
           .then(function(emp) {
-            res.send(emp);
+            res.render("employees", { data: emp });
+            // res.send(emp);
           })
           .catch(function(reason) {
             res.send(reason);
@@ -97,10 +148,12 @@ app.get("/employees", (req, res) => {
     } else if (req.query.hasOwnProperty("manager")) {
       var managertValue = req.query.manager;
       if (managertValue && (managertValue <= 30 && managertValue > 0)) {
+        var isManager = true;
         dataService
           .getEmployeesByManager(managertValue)
           .then(function(emp) {
-            res.send(emp);
+            res.render("employees", { data: emp, isManager });
+            // res.send(emp);
           })
           .catch(function(reason) {
             res.send(reason);
@@ -110,7 +163,8 @@ app.get("/employees", (req, res) => {
       dataService
         .getAllEmployees()
         .then(function(emp) {
-          res.json(emp);
+          res.render("employees", { data: emp });
+          // res.json(emp);
         })
         .catch(function(reason) {
           console.log(reason);
@@ -137,11 +191,11 @@ app.get("/employees/:value", (req, res) => {
       dataService
         .getEmployeeByNum(num)
         .then(function(emp) {
-          res.json(emp);
+          res.render("employee", { data: emp });
         })
         .catch(function(reason) {
           console.log(reason);
-          res.send(reason);
+          res.render("employee", { message: "No Results" });
         });
     }
   }
@@ -175,7 +229,7 @@ app.get("/images", (req, res) => {
   var path = "./public/images/uploaded";
   fs.readdir(path, function(err, items) {
     if (!err) {
-      res.json({ images: items });
+      res.render("images", { data: items });
     } else {
       res.send("No images in the folder");
     }
@@ -192,6 +246,12 @@ app.post("/employees/add", (req, res) => {
       console.log(reason);
       res.send(reason);
     });
+});
+
+app.post("/employee/update", (req, res) => {
+  dataService.updateEmployee(req.body).then(function() {
+    res.redirect("/employees");
+  });
 });
 
 // This use() will not allow requests to go beyond it
