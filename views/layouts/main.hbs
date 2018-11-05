@@ -37,10 +37,12 @@
 
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li>
-            <a href="/images">Images</a>
-          </li>
-          <li>
+          {{#navLink "/images"}}Images{{/navLink}}
+          {{#navLink "/employees"}}Employees{{/navLink}}
+          {{#navLink "/managers"}}Managers{{/navLink}}
+          {{#navLink "/departments"}}Departments{{/navLink}}
+          
+          {{!-- <li>
             <a href="/employees">Employees</a>
           </li>
           <li>
@@ -48,7 +50,7 @@
           </li>
           <li>
             <a href="/departments">Departments</a>
-          </li>
+          </li> --}}
 
         </ul>
       </div>
