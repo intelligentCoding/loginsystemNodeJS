@@ -1,0 +1,45 @@
+<div class="row">
+  <div class="col-md-12">
+    <h2>Employees
+      <a href="/department/add" class="btn btn-success pull-right">Add New Department</a>
+    </h2>
+    <hr />
+
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th> Department ID</th>
+            <th> Department Name</th>
+          </tr>
+        </thead>
+        {{#each data}}
+        <tbody>
+          <tr>
+            <td>
+              {{this.DepartmentId}}
+            </td>
+            <td>
+              <a href="/departments/{{this.DepartmentId}}">{{departmentName}}</a>
+            </td>
+
+
+
+          </tr>
+
+        </tbody>
+        {{/each}}
+
+
+
+      </table>
+    </div>
+
+  </div>
+
+
+  <div class="col-md-12 text-center">
+    <strong>{{message}}</strong>
+  </div>
+
+</div>

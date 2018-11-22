@@ -1,17 +1,13 @@
 /*********************************************************************************
-*  BTI325 – Assignment 4
-*  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part 
-*  of this assignment has been copied manually or electronically from any other source 
-*  (including 3rd party web sites) or distributed to other students.
-* 
-*  Name: Kashif Mahmood Student ID: 041-567-132 Date: 2018-11-04
-*  Online (Heroku) Link: ________________________________________________________
-*
-********************************************************************************/ 
-
-
-
-
+ *  BTI325 – Assignment 5
+ *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part
+ *  of this assignment has been copied manually or electronically from any other source
+ *  (including 3rd party web sites) or distributed to other students.
+ *
+ *  Name: Kashif Mahmood Student ID: 041-567-132 Date: 2018-11-17
+ *  Online (Heroku) Link: https://fierce-plains-52224.herokuapp.com/
+ *
+ ********************************************************************************/
 
 const express = require("express");
 const multer = require("multer");
@@ -28,7 +24,7 @@ app.engine(
   exphbs({
     defaultLayout: "main",
     extname: ".hbs",
-    layoutsDir: path.join(__dirname, "views/layouts"),
+    layoutsDir: path.join(__dirname, "views/layouts/"),
     helpers: {
       navLink: function(url, options) {
         return (
@@ -87,9 +83,79 @@ app.get("/", (req, res) => {
 app.get("/about", (req, res) => {
   res.render("about");
 });
-
+app.get("/employees/delete/:value", (req, res) => {
+  if (req.hasOwnProperty("params")) {
+    if (req.params.value) {
+      var num = req.params.value;
+      dataService
+        .deleteEmployeeByNum(num)
+        .then(function(success) {
+          res.redirect("/employees");
+        })
+        .catch(function(err) {
+          res.status(500).send("Unable to delete Employee");
+        });
+    }
+  }
+});
 app.get("/employees/add", (req, res) => {
-  res.render("addEmployee");
+  dataService
+    .getDepartments()
+    .then(function(department) {
+      res.render("addEmployee", { data: department });
+    })
+    .catch(function(reason) {
+      res.render("addEmployee", { departments: [] });
+    });
+});
+
+app.get("/department/add", (req, res) => {
+  res.render("addDepartments");
+});
+
+app.post("/department/add", (req, res) => {
+  console.log("Hello from the otherside");
+  dataService
+    .addDepartments(req.body)
+    .then(function(emp) {
+      console.log("IN then fuck");
+      res.redirect("/departments");
+    })
+    .catch(function(reason) {
+      //console.log(reason);
+
+      res.render("addDepartments", { message: reason });
+    });
+});
+
+app.get("/departments/:value", (req, res) => {
+  if (req.hasOwnProperty("params")) {
+    if (req.params.value) {
+      var num = req.params.value;
+
+      dataService
+        .getDepartmentById(num)
+        .then(function(emp) {
+          res.render("department", { data: emp });
+        })
+        .catch(function(reason) {
+          console.log(reason);
+          res.status(400).send(reason);
+        });
+    }
+  }
+});
+app.post("/departments/update", (req, res) => {
+  //console.log(req.body);
+  // console.log(req.body);
+  dataService
+    .updateDepartments(req.body)
+    .then(function() {
+      res.redirect("/departments");
+    })
+    .catch(function(reason) {
+      res.render("departments", { message: reason });
+    });
 });
 
 app.get("/images/add", (req, res) => {
@@ -100,7 +166,13 @@ app.get("/departments", (req, res) => {
   dataService
     .getDepartments()
     .then(function(departmnt) {
-      res.json(departmnt);
+      if (departmnt.length > 0) {
+        res.render("departments", { data: departmnt });
+      } else {
+        res.render("departments", {
+          message: "There are no Departments"
+        });
+      }
     })
     .catch(function(reason) {
       console.log(reason);
@@ -120,11 +192,18 @@ app.get("/employees", (req, res) => {
         dataService
           .getEmployeesByStatus(statusValue)
           .then(function(emp) {
-            res.render("employees", { data: emp });
-            // res.json(emp);
+            //console.log(emp.length);
+            if (emp.length > 0) {
+              res.render("employees", { data: emp });
+            } else {
+              res.render("employees", {
+                message:
+                  "There are no Employees with Status Value " + statusValue
+              });
+            }
           })
           .catch(function(reason) {
-            res.render({message: "no results"});
+            res.render({ message: "no results" + reason });
             // res.send(reason);
           });
       }
@@ -136,7 +215,17 @@ app.get("/employees", (req, res) => {
         dataService
           .getEmployeesByDepartment(departmentValue)
           .then(function(emp) {
-            res.render("employees", { data: emp });
+            //console.log(emp.length);
+            if (emp.length > 0) {
+              res.render("employees", { data: emp });
+            } else {
+              res.render("employees", {
+                message:
+                  "There are no Employees with department Number " +
+                  departmentValue
+              });
+            }
+
             // res.send(emp);
           })
           .catch(function(reason) {
@@ -152,8 +241,14 @@ app.get("/employees", (req, res) => {
         dataService
           .getEmployeesByManager(managertValue)
           .then(function(emp) {
-            res.render("employees", { data: emp, isManager });
-            // res.send(emp);
+            //console.log(emp.length);
+            if (emp.length > 0) {
+              res.render("employees", { data: emp });
+            } else {
+              res.render("employees", {
+                message: "There are no Employees With manager# " + managertValue
+              });
+            }
           })
           .catch(function(reason) {
             res.send(reason);
@@ -163,8 +258,14 @@ app.get("/employees", (req, res) => {
       dataService
         .getAllEmployees()
         .then(function(emp) {
-          res.render("employees", { data: emp });
-          // res.json(emp);
+          //console.log(emp.length);
+          if (emp.length > 0) {
+            res.render("employees", { data: emp });
+          } else {
+            res.render("employees", {
+              message: "There are no Employees"
+            });
+          }
         })
         .catch(function(reason) {
           console.log(reason);
@@ -194,8 +295,7 @@ app.get("/employees/:value", (req, res) => {
           res.render("employee", { data: emp });
         })
         .catch(function(reason) {
-          console.log(reason);
-          res.render("employee", { message: "No Results" });
+          res.status(400).send(reason);
         });
     }
   }
@@ -243,12 +343,12 @@ app.post("/employees/add", (req, res) => {
       res.redirect("/employees");
     })
     .catch(function(reason) {
-      console.log(reason);
       res.send(reason);
     });
 });
 
 app.post("/employee/update", (req, res) => {
+  //console.log(req.body);
   dataService.updateEmployee(req.body).then(function() {
     res.redirect("/employees");
   });
@@ -272,8 +372,8 @@ dataService
   .initialize()
   .then(function(data) {
     app.listen(HTTP_PORT, onHttpStart);
-    console.log(data);
   })
   .catch(function(reason) {
+    // console.log("IN error in server.js    ");
     console.log(reason);
   });

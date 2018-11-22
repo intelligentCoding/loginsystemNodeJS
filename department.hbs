@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col-md-12">
+
+    {{#each data}}
+    <h2>{{this.departmentName}}- Employee: {{ this.DepartmentId}}</h2>
+    <hr />
+    <form method="post" action="/department/update">
+      <fieldset>
+        <legend>Personal Information</legend>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="firstName">First Name:</label>
+              <input class="form-control" id="firstName" name="firstName" type="text" value="{{ this.firstName}}" />
+            </div>
+          </div>
+        </div>
+
+      </fieldset>
+      <hr />
+      <input type="submit" class="btn btn-primary pull-right" value="Update Employee" />
+      <br />
+      <br />
+      <br />
+    </form>
+    {{/each}}
+  </div>
+</div>
